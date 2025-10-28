@@ -67,7 +67,13 @@ export default function BlogPage() {
 }
 
 /* ==================== CARD COMPONENT ==================== */
-function BlogCard({ title, href, description }) {
+interface BlogCardProps {
+  title: string;
+  href: string;
+  description: string;
+}
+
+function BlogCard({ title, href, description }: BlogCardProps) {
   return (
     <Link href={href} className="group">
       <div className="bg-[#0f0f0f] border border-[#fdd023]/30 rounded-2xl p-6 hover:border-[#fdd023] transition duration-300 shadow-md hover:shadow-[#fdd023]/20 hover:-translate-y-2">
