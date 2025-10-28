@@ -1,92 +1,79 @@
 'use client';
 
-import Link from "next/link";
 import Navbar from "../../components/Navbar";
+import { motion } from "framer-motion";
+import { useEffect } from "react";
 
 export default function BlogPage() {
+  // Inject animations dynamically — self-contained, no global edits
+  useEffect(() => {
+    const style = document.createElement("style");
+    style.innerHTML = `
+      @keyframes outline-glow {
+        0% { mask-position: 0%; }
+        100% { mask-position: 100%; }
+      }
+      @keyframes gradient-move {
+        0%, 100% { transform: translateX(-10%); }
+        50% { transform: translateX(10%); }
+      }
+      @keyframes text-pulse {
+        0%, 100% { opacity: 1; filter: drop-shadow(0 0 8px #fdd02360); }
+        50% { opacity: 0.85; filter: drop-shadow(0 0 16px #fdd02390); }
+      }
+      .animate-outline-glow {
+        animation: outline-glow 2.5s linear infinite;
+        mask-size: 200%;
+      }
+      .animate-gradient-move {
+        animation: gradient-move 8s ease-in-out infinite;
+      }
+      .animate-text-pulse {
+        animation: text-pulse 3s ease-in-out infinite;
+      }
+      /* Responsive font scaling */
+      .responsive-title {
+        font-size: clamp(2rem, 8vw, 9rem);
+        line-height: 1.1;
+        word-break: break-word;
+      }
+    `;
+    document.head.appendChild(style);
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
+
   return (
-    <div className="min-h-screen bg-black text-[#f5f5dc] px-8 py-12 font-sans pt-24">
+    <div className="relative min-h-screen flex flex-col items-center justify-center bg-black overflow-hidden text-[#f5f5dc] font-sans px-6">
       <Navbar />
 
-      {/* Page Header */}
-      <div className="text-center mb-16">
-        <h1 className="text-5xl font-extrabold text-[#fdd023] mb-4 tracking-wide">
-          Our Blogs
-        </h1>
-        <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-          Explore detailed write-ups on famous cyberattacks and general cybersecurity practices.
-        </p>
-      </div>
-
-      {/* Famous Cyber Attacks Section */}
-      <section className="mb-20">
-        <h2 className="text-3xl font-bold mb-10 text-[#fdd023] border-b border-[#fdd023]/30 pb-2">
-          Famous Cyber Attacks
-        </h2>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <BlogCard
-            title="Target Data Breach"
-            href="/blog/cyber-attacks/target-data"
-            description="A look into one of the most infamous retail data breaches in history."
-          />
-          <BlogCard
-            title="WannaCry: The 2017 Ransomware Outbreak"
-            href="/blog/cyber-attacks/wannacry"
-            description="How a global ransomware attack exploited unpatched systems worldwide."
-          />
-          <BlogCard
-            title="SolarWinds / Sunburst Supply Chain Attack"
-            href="/blog/cyber-attacks/soalrwinds"
-            description="Inside one of the most sophisticated cyber-espionage attacks ever seen."
-          />
-        </div>
-      </section>
-
-      {/* General Blogs Section */}
-      <section>
-        <h2 className="text-3xl font-bold mb-10 text-[#fdd023] border-b border-[#fdd023]/30 pb-2">
-          General Blogs
-        </h2>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <BlogCard
-            title="Supply Chain Security & Third-Party Risks"
-            href="/blog/general-blogs/supply_chain"
-            description="Understanding the weak links in your software supply chain."
-          />
-          <BlogCard
-            title="Securing the Hybrid Frontier"
-            href="/blog/general-blogs/hybrid_frontier"
-            description="Mitigating cyber threats in remote work and edge computing environments."
-          />
-        </div>
-      </section>
-    </div>
-  );
-}
-
-/* ==================== CARD COMPONENT ==================== */
-interface BlogCardProps {
-  title: string;
-  href: string;
-  description: string;
-}
-
-function BlogCard({ title, href, description }: BlogCardProps) {
-  return (
-    <Link href={href} className="group">
-      <div className="bg-[#0f0f0f] border border-[#fdd023]/30 rounded-2xl p-6 hover:border-[#fdd023] transition duration-300 shadow-md hover:shadow-[#fdd023]/20 hover:-translate-y-2">
-        <h3 className="text-2xl font-semibold text-[#fdd023] mb-3 group-hover:underline decoration-[#fdd023]/70 underline-offset-4">
-          {title}
-        </h3>
-        <p className="text-gray-400 text-justify leading-relaxed mb-4">
-          {description}
-        </p>
-        <span className="inline-block text-[#fdd023] font-medium group-hover:translate-x-1 transition-transform">
-          Read More →
+      {/* Animated Text */}
+      <motion.h1
+        initial={{ opacity: 0, scale: 0.8, y: 40 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{
+          duration: 1.2,
+          ease: [0.25, 0.1, 0.25, 1],
+        }}
+        className="text-center font-extrabold uppercase tracking-widest leading-tight select-none animate-text-pulse"
+      >
+        <span
+          className="relative block responsive-title text-transparent"
+          style={{
+            WebkitTextStroke: "2px #fdd023",
+          }}
+        >
+          COMING&nbsp;SOON!!
+          {/* Animated outline layer */}
+          <span className="absolute inset-0 animate-outline-glow text-transparent [mask-image:linear-gradient(90deg,transparent,white,transparent)]">
+            COMING&nbsp;SOON!!
+          </span>
         </span>
-      </div>
-    </Link>
+      </motion.h1>
+
+      {/* Subtle animated background glow */}
+      <div className="absolute w-[160%] h-[160%] bg-gradient-to-r from-yellow-500/10 via-transparent to-yellow-500/10 animate-gradient-move blur-3xl" />
+    </div>
   );
 }
